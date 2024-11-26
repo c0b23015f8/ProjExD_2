@@ -74,6 +74,7 @@ def create_bomb_assets():
 def game_over(screen, kk_rct):
     black_surf = pg.Surface((WIDTH, HEIGHT))
     black_surf.fill((0, 0, 0))
+    #まず黒い画面にしてから透過しているのであっていると思う
     black_surf.set_alpha(200)  
     screen.blit(black_surf, (0, 0))
 

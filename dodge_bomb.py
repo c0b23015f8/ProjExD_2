@@ -14,6 +14,35 @@ DELTA = {
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def get_kk_img(sum_mv: tuple[int, int], base_img: pg.Surface) -> pg.Surface:
+
+    angle = 0
+    flip_x, flip_y = False, False
+
+    if sum_mv == (0, -5):  # 上
+        angle = 90
+    elif sum_mv == (0, +5):  # 下
+        angle = -90
+    elif sum_mv == (-5, 0):  # 左
+        flip_x = True
+    elif sum_mv == (+5, 0):  # 右
+        pass  # デフォルトは右向き
+    elif sum_mv == (-5, -5):  # 左上
+        angle = 45
+        flip_x = True
+    elif sum_mv == (-5, +5):  # 左下
+        angle = -45
+        flip_x = True
+    elif sum_mv == (+5, -5):  # 右上
+        angle = 45
+    elif sum_mv == (+5, +5):  # 右下
+        angle = -45
+
+    # 回転と反転を適用
+    rotated_img = pg.transform.rotozoom(base_img, angle, 1.0)
+    final_img = pg.transform.flip(rotated_img, flip_x, flip_y)
+    return final_img
+
 
 def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     """
@@ -82,7 +111,19 @@ def main():
     clock = pg.time.Clock()
     tmr = 0
 
+    
+
     while True:
+        key_lst = pg.key.get_pressed()  # キー入力状態を取得
+        sum_mv = [0, 0]
+        for key, tpl in DELTA.items():
+            if key_lst[key]:  # 押されているキーの方向を加算
+                sum_mv[0] += tpl[0]
+                sum_mv[1] += tpl[1]
+
+        # こうかとんの向きを更新
+        kk_img = get_kk_img((0, 0))
+        kk_img = get_kk_img(tuple(sum_mv))
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
